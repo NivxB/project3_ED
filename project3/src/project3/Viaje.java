@@ -11,14 +11,26 @@ package project3;
 public class Viaje {
     private String ID;
     private String Aerolinea;
+    private boolean Visited;
+    
+    
 
     public Viaje(String ID, String Aerolinea) {
+        Visited = false;
         this.ID = ID;
         this.Aerolinea = Aerolinea;
     }
 
     public Viaje(){
-        
+        Visited = false;
+    }
+
+    public boolean isVisited() {
+        return Visited;
+    }
+
+    public void setVisited(boolean Visited) {
+        this.Visited = Visited;
     }
     
     public String getID() {

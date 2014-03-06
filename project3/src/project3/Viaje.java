@@ -41,6 +41,9 @@ public class Viaje {
        return E.getID().equals(this.ID);       
     }
 
-
+    @Override
+    public String toString(){
+        return ID+"";
+    }
        
 }

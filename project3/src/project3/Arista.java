@@ -38,4 +38,9 @@ public class Arista {
         
     }
     
+    @Override
+    public String toString(){
+        return Peso+"";
+    }
+    
 }

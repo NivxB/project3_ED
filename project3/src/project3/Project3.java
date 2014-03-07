@@ -55,84 +55,117 @@ public class Project3 {
         }
         //paintGraph();
         //System.out.println(Grafo.get
+
+        Viaje Start = Grafo.getVertices().toArray(new Viaje[0])[5];
+        Viaje Dest1 = Grafo.getVertices().toArray(new Viaje[0])[1];
+        Viaje Dest2 = Grafo.getVertices().toArray(new Viaje[0])[8];
+
+        Start.setVisited(true);
+
+        getShortestPath(Start, Dest1, Dest2);
+        System.out.println(Trip);
+
         System.out.println("--------------------CIUDADES--------------------");
         System.out.println("1. Tegucigalpa\n2. Miami\n3. Cancun\n4. Atlanta\n5. New York\n6. Baltimore\n7. San Pedro Sula\n8. El Salvador");
         System.out.println("9. Roatán\n10. Managua\n11. Ciudad de México\n12. Panamá\n13. Bogotá\n14. Lima\n15. Philadelphia\n16. Los Angeles");
         System.out.println("17. Seattle\n18. Dallas\n19. Madrid\n20. Honolulu\n21. Berlin\n22. Tokyo\n23. Napoli\n24. Amsterdam\n25. Wichita");
     }
-    
-    private static void getShortestPath(Viaje Start,Viaje... Destiny){
+
+    private static void getShortestPath(Viaje Start, Viaje... Destiny) {
+        System.out.println("Enter getShortestPath");
+
         int i = 0;
-        while (CheckVisited(Destiny)){
+        while (!CheckVisited(Destiny)) {
+
+            System.out.println("Enter While CheckVisited");
+
             Viaje StartNode = Destiny[i];
-            while(!StartNode.equals(Start)){
+            while (!StartNode.equals(Start)) {
+
+                System.out.println("Enter While !StartNode");
+
                 Arista[] InEdges = Grafo.getInEdges(StartNode).toArray(new Arista[0]);
-                StartNode = getShortestNode(ArraytoArrayList(InEdges),Destiny,i);
-                if (InEdges.length == 0){
+                if (InEdges.length == 0 || StartNode.isVisited()) {
                     break;
                 }
-                
+                StartNode.setVisited(true);
+                StartNode = getShortestNode(ArraytoArrayList(InEdges), Destiny, i);
+
+
             }
+            ResetVisitWeight();
             i++;
+            
+            if (i >= Destiny.length){
+                break;
+            }
         }
     }
-    
-    private static ArrayList<Arista> ArraytoArrayList(Arista[] A){
+
+    private static void ResetVisitWeight() {
+        for (int i = 0; i < Grafo.getVertices().size(); i++) {
+            Grafo.getVertices().toArray(new Viaje[0])[i].setVisited(false);
+        }
+        Trip = 0.0;
+    }
+
+    private static ArrayList<Arista> ArraytoArrayList(Arista[] A) {
         ArrayList<Arista> retVal = new ArrayList<>();
-        
-        for (int i = 0;i<A.length;i++){
+
+        for (int i = 0; i < A.length; i++) {
             retVal.add(A[i]);
         }
-        
+
         return retVal;
     }
-    
-    private static boolean CheckVisited(Viaje[] Destiny){
-        for (int i = 0;i<Destiny.length;i++){
-            if (!Destiny[i].isVisited())
+
+    private static boolean CheckVisited(Viaje[] Destiny) {
+        for (int i = 0; i < Destiny.length; i++) {
+            if (!Destiny[i].isVisited()) {
                 return false;
+            }
         }
-        
+
         return true;
     }
-    
-    
-   private static Viaje getShortestNode(ArrayList<Arista> SendEdges,Viaje[] TravelTo,int Actual){
-       ArrayList<Viaje> sendNode = new ArrayList<>();
-       for (int i = 0;i<sendNode.size();i++){
-           //REVISAR
-           //Creo que te retornaria hacia donde va el Edge y no de donde parte
-           //Y se ocupa de donde parte.
-           sendNode.add(Grafo.getDest(SendEdges.get(i)));
-       }
-       
-       for (int i = 0 ; i<TravelTo.length;i++){
-           if (i == Actual)
-               continue;
-           for (int j = 0; j< sendNode.size();j++){
-               if (TravelTo[i].equals(sendNode.get(j))){
-                   Trip += SendEdges.get(j).getPeso();
-                   return sendNode.get(j);
-               }
-           }
-           
-           
-       }
-       
-       double weigth = SendEdges.get(0).getPeso();
-       int Position = 0;
-       for (int i = 1 ; i< SendEdges.size();i++){
-           if (weigth > SendEdges.get(i).getPeso()){
-               weigth = SendEdges.get(i).getPeso();
-               Position = i;
-           }
-       }
-       
-       Trip += weigth;
-       return sendNode.get(Position);
-              
-   }
-    
+
+    private static Viaje getShortestNode(ArrayList<Arista> SendEdges, Viaje[] TravelTo, int Actual) {
+        ArrayList<Viaje> sendNode = new ArrayList<>();
+        for (int i = 0; i < SendEdges.size(); i++) {
+            //REVISAR
+            //Creo que te retornaria hacia donde va el Edge y no de donde parte
+            //Y se ocupa de donde parte.
+            sendNode.add(Grafo.getSource(SendEdges.get(i)));
+        }
+
+        for (int i = 0; i < TravelTo.length; i++) {
+            if (i == Actual) {
+                continue;
+            }
+            for (int j = 0; j < sendNode.size(); j++) {
+                if (TravelTo[i].equals(sendNode.get(j))) {
+                    Trip += SendEdges.get(j).getPeso();
+                    return sendNode.get(j);
+                }
+            }
+
+
+        }
+
+        double weigth = SendEdges.get(0).getPeso();
+        int Position = 0;
+        for (int i = 1; i < SendEdges.size(); i++) {
+            if (weigth > SendEdges.get(i).getPeso()) {
+                weigth = SendEdges.get(i).getPeso();
+                Position = i;
+            }
+        }
+
+        Trip += weigth;
+        return sendNode.get(Position);
+
+    }
+
     private static void fillGraph() throws FileNotFoundException {
         File Archivo = new File("./Data/Trips.txt");
         Scanner E = new Scanner(Archivo);
@@ -198,7 +231,7 @@ public class Project3 {
                 };
         vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
         vv.getRenderContext().setVertexShapeTransformer(vertexSize);
-        
+
         vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
         vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());

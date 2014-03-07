@@ -56,13 +56,19 @@ public class Project3 {
         //paintGraph();
         //System.out.println(Grafo.get
 
-        Viaje Start = Grafo.getVertices().toArray(new Viaje[0])[5];
-        Viaje Dest1 = Grafo.getVertices().toArray(new Viaje[0])[1];
-        Viaje Dest2 = Grafo.getVertices().toArray(new Viaje[0])[8];
+        Viaje Start = Grafo.getVertices().toArray(new Viaje[0])[10];
+        Viaje Dest1 = Grafo.getVertices().toArray(new Viaje[0])[4];
+        Viaje Dest2 = Grafo.getVertices().toArray(new Viaje[0])[0];
 
+        System.out.println(Start.getID());
+        System.out.println(Dest1.getID());
+        System.out.println(Dest2.getID());
+        
         Start.setVisited(true);
 
-        getShortestPath(Start, Dest1, Dest2);
+        System.out.println(Grafo.getVertices());
+        
+        getShortestPath(Start, Dest1,Dest2);
         System.out.println(Trip);
 
         System.out.println("--------------------CIUDADES--------------------");
@@ -74,11 +80,14 @@ public class Project3 {
     private static void getShortestPath(Viaje Start, Viaje... Destiny) {
         System.out.println("Enter getShortestPath");
 
-        int i = 0;
+        int i = -1;
         while (!CheckVisited(Destiny)) {
-
+            ResetVisitWeight();
+            i++;
             System.out.println("Enter While CheckVisited");
-
+            if (i >= Destiny.length){
+                break;
+            }
             Viaje StartNode = Destiny[i];
             while (!StartNode.equals(Start)) {
 
@@ -92,13 +101,8 @@ public class Project3 {
                 StartNode = getShortestNode(ArraytoArrayList(InEdges), Destiny, i);
 
 
-            }
-            ResetVisitWeight();
-            i++;
-            
-            if (i >= Destiny.length){
-                break;
-            }
+            }            
+
         }
     }
 
@@ -130,21 +134,35 @@ public class Project3 {
     }
 
     private static Viaje getShortestNode(ArrayList<Arista> SendEdges, Viaje[] TravelTo, int Actual) {
+        
+        System.out.println("Enter getShortestNode");
+        
         ArrayList<Viaje> sendNode = new ArrayList<>();
         for (int i = 0; i < SendEdges.size(); i++) {
             //REVISAR
             //Creo que te retornaria hacia donde va el Edge y no de donde parte
             //Y se ocupa de donde parte.
+            
+            System.out.println("Enter For fill sendNode");
+            
             sendNode.add(Grafo.getSource(SendEdges.get(i)));
         }
 
         for (int i = 0; i < TravelTo.length; i++) {
-            if (i == Actual) {
-                continue;
-            }
+            
+            System.out.println("Enter for TravelTo");
+            
+            //if (i == Actual) {
+            //    continue;
+            //}
             for (int j = 0; j < sendNode.size(); j++) {
+                
+                System.out.println("Enter For sendNode");
+                
                 if (TravelTo[i].equals(sendNode.get(j))) {
                     Trip += SendEdges.get(j).getPeso();
+                    System.out.println(sendNode.get(j).getID());
+                    System.out.println("Peso " + SendEdges.get(j).getPeso() );
                     return sendNode.get(j);
                 }
             }
@@ -162,6 +180,8 @@ public class Project3 {
         }
 
         Trip += weigth;
+        System.out.println(sendNode.get(Position).getID());
+        System.out.println("Peso " + weigth );
         return sendNode.get(Position);
 
     }
@@ -251,5 +271,15 @@ public class Project3 {
             }
         }
         return null;
+    }
+    
+    
+    private static void ShortestP(Viaje Start,Viaje... Dest){
+        ArrayList PESOS = new ArrayList();
+        ArrayList DIRE = new ArrayList();
+        while (!CheckVisited(Dest)){
+            Arista[] Adj = Grafo.getOutEdges(Start).toArray(new Arista[0]);
+            
+        }
     }
 }
